@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Enums.TipoPlanta;
+
 public class Planta {
    private TipoPlanta tipo;
    private int diasCrescimento;
