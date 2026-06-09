@@ -11,7 +11,7 @@ public class LojaView {
     public void exibirMensagemBoasVindas(Jogador jogador){
         System.out.printf("""
 ╔══════════════════════════════════════════════╗
-║             ARMAZÉM DO PIERRE 🌱             ║
+║               ARMAZÉM DO PIERRE              ║
 ╚══════════════════════════════════════════════╝
 
 Olá, %s!
@@ -21,9 +21,7 @@ Aqui você encontrará sementes de qualidade para todas as estações do ano.
 
 Planeje suas colheitas com cuidado e transforme sua fazenda em um verdadeiro sucesso!
 
-╔═════════════════════════════════════════════════════╗
-║                        CATÁLOGO                     ║
-╚═════════════════════════════════════════════════════╝
+
 """, jogador.getNome());
     }
 
@@ -43,7 +41,10 @@ Planeje suas colheitas com cuidado e transforme sua fazenda em um verdadeiro suc
         String topo  = "╔════════════════╦══════════════════╦════════╦════════╗";
         String linha = "╠════════════════╬══════════════════╬════════╬════════╣";
         String base  = "╚════════════════╩══════════════════╩════════╩════════╝";
-
+        System.out.println(
+                "╔═════════════════════════════════════════════════════╗\n" +
+                "║                        CATÁLOGO                     ║\n" +
+                "╚═════════════════════════════════════════════════════╝");
         System.out.println(topo);
         System.out.printf("║%s║%s║%s║%s║%n",
                 centralizar("Nome", 16),
@@ -66,5 +67,11 @@ Planeje suas colheitas com cuidado e transforme sua fazenda em um verdadeiro suc
                     centralizar(String.valueOf(planta.getPrecoVenda()), 8));
         }
         System.out.println(base);
+    }
+
+    public void exibirOpcoesLoja(){
+        System.out.println("Selecione uma opção:\n" +
+                            "1 - Exibir Catálogo Geral\n"+
+                            "2 - Exibir Catálogo por estação");
     }
 }
