@@ -1,16 +1,22 @@
 package Controller;
 
-import Model.Enums.CorCabelo;
-import Model.Enums.CorOlhos;
 import Model.Enums.Estacoes;
-import Model.Jogador;
 import Model.Loja;
-import Service.LojaService;
 import View.LojaView;
 
 public class LojaController {
-    public static void main(String[] args) {
+        private Loja loja;
+        private LojaView lojaView;
 
+    public LojaController(Loja loja, LojaView lojaView) {
+        this.loja = loja;
+        this.lojaView = lojaView;
     }
 
+    public void exibirCatalogo(){
+        lojaView.exibirLoja(loja.getCatalogo());
+    }
+    public void exibirCatalogoPorEstacao(Estacoes estacao){
+        lojaView.exibirLoja(loja.getCatalogoPorEstacao(estacao));
+    }
 }
