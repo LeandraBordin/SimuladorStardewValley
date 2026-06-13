@@ -1,1 +1,5 @@
-# SimuladorStardewValley
+## SimuladorStardewValley
+
+# Grupo:
+-Gabriel
+-Leandra
