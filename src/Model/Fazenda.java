@@ -12,7 +12,7 @@ public class Fazenda {
     private Estacoes estacao;
     private int dia;
     private List<Planta> plantasPlantadas;
-    private List<TipoPlanta> sementes;
+    private List<Planta> estoquePlantas;
     private NivelFazenda nivel;
 
     public Fazenda(String nome) {
@@ -20,7 +20,7 @@ public class Fazenda {
         setEstacao(Estacoes.PRIMAVERA);
         setDia(1);
         setPlantasPlantadas(new ArrayList<>());
-        setSementes(new ArrayList<>());
+        setEstoquePlantas(new ArrayList<>());
         setNivel(NivelFazenda.NIVEL_1);
     }
 
@@ -48,6 +48,18 @@ public class Fazenda {
         this.dia = dia;
     }
 
+    public void passarDia(){
+        dia++;
+    }
+
+    public void passarEstacao(){
+        if (dia > 28){
+            Estacoes[] todas = Estacoes.values();
+            Estacoes prox = todas[(estacao.ordinal()+1) % todas.length];
+            setEstacao(prox);
+        }
+    }
+
     public List<Planta> getPlantasPlantadas() {
         return plantasPlantadas;
     }
@@ -56,12 +68,12 @@ public class Fazenda {
         this.plantasPlantadas = plantasPlantadas;
     }
 
-    public List<TipoPlanta> getSementes() {
-        return sementes;
+    public void plantarPlanta(Planta planta){
+        plantasPlantadas.add(planta);
     }
 
-    public void setSementes(List<TipoPlanta> sementes) {
-        this.sementes = sementes;
+    public void removerPlanta(Planta planta){
+        plantasPlantadas.remove(planta);
     }
 
     public NivelFazenda getNivel() {
@@ -72,6 +84,18 @@ public class Fazenda {
         this.nivel = nivel;
     }
 
+    public List<Planta> getEstoquePlantas() {
+        return estoquePlantas;
+    }
+
+    public void setEstoquePlantas(List<Planta> estoquePlantas) {
+        this.estoquePlantas = estoquePlantas;
+    }
+
+    public void guardarPlanta(Planta planta){
+        estoquePlantas.add(planta);
+    }
+
     @Override
     public String toString() {
         return "Fazenda{" +
@@ -79,7 +103,6 @@ public class Fazenda {
                 ", estacao=" + estacao +
                 ", dia=" + dia +
                 ", plantasPlantadas=" + plantasPlantadas +
-                ", sementes=" + sementes +
                 ", nivel=" + nivel +
                 '}';
     }
