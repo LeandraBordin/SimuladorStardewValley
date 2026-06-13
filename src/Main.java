@@ -1,23 +1,16 @@
+import Controller.LojaController;
 import Model.Enums.CorCabelo;
 import Model.Enums.CorOlhos;
-import Model.Enums.TipoPlanta;
-import Model.Fazenda;
+import Model.Enums.Estacoes;
 import Model.Jogador;
+import Model.Loja;
+import View.LojaView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-
-        List<TipoPlanta> lista = new ArrayList<>(List.of(TipoPlanta.values()));
-//        lista.forEach(tipoPlanta -> System.out.println(tipoPlanta));
-
-
-        Jogador leandra = new Jogador("Leandra", CorCabelo.CASTANHO, CorOlhos.VERDE);
-        Fazenda fazenda1 = new Fazenda("Fazenda da lele");
-        leandra.adicionarFazenda(fazenda1);
-        System.out.println(leandra);
+        Menu menu = new Menu();
+        menu.menuPrincipal();
     }
-
 }
