@@ -4,10 +4,11 @@ import Model.Enums.Estacoes;
 import Model.Enums.NivelFazenda;
 import Model.Enums.TipoPlanta;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fazenda {
+public class Fazenda implements Serializable {
     private String nome;
     private Estacoes estacao;
     private int dia;
