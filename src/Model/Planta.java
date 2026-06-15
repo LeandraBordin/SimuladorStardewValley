@@ -27,6 +27,13 @@ public class Planta {
         this.diasCrescimento = diasCrescimento;
     }
 
+    public boolean prontoParaColheita(Planta planta){
+        if(planta.diasCrescimento > planta.tipo.getDiasCrescimento()){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Planta{" +
