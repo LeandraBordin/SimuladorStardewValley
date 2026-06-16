@@ -1,11 +1,14 @@
 import Controller.LojaController;
-import Model.Enums.CorCabelo;
-import Model.Enums.CorOlhos;
+import DAO.GerenciadorArquivos;
+import DAO.JogadorDAO;
 import Model.Enums.Estacoes;
+import Model.Fazenda;
 import Model.Jogador;
 import Model.Loja;
 import View.LojaView;
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class Menu {
@@ -13,9 +16,8 @@ public class Menu {
     private final Loja loja = new Loja();
     private final LojaView lojaView = new LojaView();
     private final LojaController lojaController = new LojaController(loja,lojaView);
-    Jogador jogador = new Jogador("Leandra", CorCabelo.CASTANHO, CorOlhos.VERDE);
 
-    public void menuPrincipal() {
+    public void menuPrincipal(Jogador jogador) {
         System.out.println("Bem vindo ao jogo!");
         int opcao;
         do {
@@ -44,7 +46,7 @@ public class Menu {
         } while (opcao != 0);
     }
 
-    private Estacoes selecionarEstacao() {
+    public Estacoes selecionarEstacao() {
 
         System.out.println("""
             1 - Verão
@@ -67,5 +69,60 @@ public class Menu {
             lojaController.exibirCatalogoPorEstacao(estacao);
         }
         return estacao;
+    }
+
+    public void menuJogador() throws IOException, ClassNotFoundException {
+        int op = 0;
+        do {
+            System.out.println("""
+                    1 - Selecionar jogo
+                    2 - Criar novo jogo
+                    3 - Excluir jogo
+                    0 - Sair
+                    """);
+            op = scanner.nextInt();
+            switch (op){
+                case 1:{};
+                case 2:criarJogador();
+            }
+        }while(op != 0);
+    }
+    public void criarJogador() throws IOException, ClassNotFoundException {
+        JogadorDAO dao = JogadorDAO.getInstance();
+        System.out.println("Digite o nome do jogador:");
+        String nome = scanner.next();
+        System.out.println("Digite o nome da fazenda:");
+        String nomeFazenda = scanner.next();
+        Jogador jogador = new Jogador(nome);
+        Fazenda fazenda = new Fazenda(nomeFazenda);
+        jogador.adicionarFazenda(fazenda);
+
+        boolean adicionado = dao.add(jogador);
+        if (adicionado) {
+            System.out.println("Jogador criado com sucesso!");
+            GerenciadorArquivos.gravarArquivo(dao.getMap(), "dadosJogador.dat");
+        } else {
+            System.out.println("Limite de jogadores atingido!");
+        }
+    }
+    public Jogador selecionarJogador() throws IOException, ClassNotFoundException {
+        JogadorDAO dao = JogadorDAO.getInstance();
+        Collection<Jogador> dados = dao.getDados();
+
+        System.out.println("=== Jogadores disponíveis ===");
+        for (Jogador j : dados) {
+            System.out.println("ID: " + j.getId() + " | Nome: " + j.getNome());
+        }
+
+        System.out.print("Digite o ID do jogador: ");
+        int id = scanner.nextInt();
+
+        Jogador jogador = dao.find(id);
+        if (jogador != null) {
+            System.out.println("Jogador selecionado: " + jogador.getNome());
+        } else {
+            System.out.println("ID inválido!");
+        }
+        return jogador;
     }
 }
