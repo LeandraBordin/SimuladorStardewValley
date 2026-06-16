@@ -1,28 +1,20 @@
 package Model;
 
-import Model.Enums.CorCabelo;
-import Model.Enums.CorOlhos;
+import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Jogador {
+public class Jogador implements Serializable, Comparable<Jogador> {
+    private int id;
     private String nome;
     private int dinheiro;
-    private CorCabelo corCabelo;
-    private CorOlhos corOlhos;
-    private List<Fazenda> fazendas;
+    private Fazenda fazenda;
 
 
-    public Jogador(String nome,CorCabelo corCabelo,CorOlhos corOlhos) {
+    public Jogador(String nome) {
         setNome(nome);
-        setCorCabelo(corCabelo);
-        setCorOlhos(corOlhos);
        setDinheiro(500);
-       setFazendas(new ArrayList<>());
     }
     public void adicionarFazenda(Fazenda fazenda){
-        fazendas.add(fazenda);
+        setFazenda(fazenda);
     }
     public String getNome() {
         return nome;
@@ -42,38 +34,28 @@ public class Jogador {
         }
     }
 
-    public List<Fazenda> getFazendas() {
-        return fazendas;
+    public Fazenda getFazenda() {
+        return fazenda;
     }
 
-    public void setFazendas(List<Fazenda> fazendas) {
-        this.fazendas = fazendas;
+    public void setFazenda(Fazenda fazenda) {
+        this.fazenda = fazenda;
     }
 
-    public CorCabelo getCorCabelo() {
-        return corCabelo;
-    }
-
-    public void setCorCabelo(CorCabelo corCabelo) {
-        this.corCabelo = corCabelo;
-    }
-
-    public CorOlhos getCorOlhos() {
-        return corOlhos;
-    }
-
-    public void setCorOlhos(CorOlhos corOlhos) {
-        this.corOlhos = corOlhos;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     @Override
     public String toString() {
         return "Jogador{" +
-                "nome='" + nome + '\'' +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
                 ", dinheiro=" + dinheiro +
-                ", corCabelo=" + corCabelo +
-                ", corOlhos=" + corOlhos +
-                ", fazendas=" + fazendas +
+                ", fazenda=" + fazenda +
                 '}';
+    }
+    @Override
+    public int compareTo(Jogador o) {
+        return this.nome.compareTo(o.nome);
     }
 }
