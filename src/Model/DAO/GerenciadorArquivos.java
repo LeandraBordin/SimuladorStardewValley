@@ -1,4 +1,4 @@
-package DAO;
+package Model.DAO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 /*
- * DAO.GerenciadorArquivos.java
+ * Model.DAO.GerenciadorArquivos.java
  *
  * Created on 22 de Maio de 2007, 10:46
  *

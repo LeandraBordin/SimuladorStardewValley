@@ -34,6 +34,12 @@ public class Planta {
         return false;
     }
 
+    public void passarDiaCrescimento(){
+        if (!prontoParaColheita(this)){
+        diasCrescimento++;
+        }
+    }
+
     @Override
     public String toString() {
         return "Planta{" +

@@ -1,11 +1,12 @@
+package View;
+
 import Controller.LojaController;
-import DAO.GerenciadorArquivos;
-import DAO.JogadorDAO;
+import Model.DAO.GerenciadorArquivos;
+import Model.DAO.JogadorDAO;
 import Model.Enums.Estacoes;
 import Model.Fazenda;
 import Model.Jogador;
 import Model.Loja;
-import View.LojaView;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -80,8 +81,8 @@ public class Menu {
                     """);
             op = scanner.nextInt();
             switch (op){
-                case 1:{};
-                case 2:criarJogador();
+                case 1:selecionarJogador();break;
+                case 2:criarJogador();break;
             }
         }while(op != 0);
     }
@@ -122,8 +123,5 @@ public class Menu {
             System.out.println("ID inválido!");
         }
         return jogador;
-    }
-    public void atualizarJogador(){
-
     }
 }
