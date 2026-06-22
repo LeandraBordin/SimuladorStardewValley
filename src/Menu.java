@@ -45,7 +45,6 @@ public class Menu {
 
         } while (opcao != 0);
     }
-
     public Estacoes selecionarEstacao() {
 
         System.out.println("""
@@ -70,7 +69,6 @@ public class Menu {
         }
         return estacao;
     }
-
     public void menuJogador() throws IOException, ClassNotFoundException {
         int op = 0;
         do {
@@ -119,10 +117,13 @@ public class Menu {
 
         Jogador jogador = dao.find(id);
         if (jogador != null) {
-            System.out.println("Jogador selecionado: " + jogador.getNome());
+            System.out.println("Jogador selecionado: " + jogador);
         } else {
             System.out.println("ID inválido!");
         }
         return jogador;
+    }
+    public void atualizarJogador(){
+
     }
 }

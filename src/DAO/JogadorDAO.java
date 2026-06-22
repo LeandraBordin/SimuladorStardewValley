@@ -61,4 +61,9 @@ public class JogadorDAO implements Serializable {
     public HashMap<Integer, Jogador> getMap() {
         return this.dados;
     }
+
+    public void atualizar(Jogador jogador) throws IOException {
+        dados.put(jogador.getId(), jogador);
+        GerenciadorArquivos.gravarArquivo(dados, ARQUIVO);
+    }
 }

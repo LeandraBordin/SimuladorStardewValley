@@ -22,7 +22,9 @@ import java.util.TreeSet;
 public class TestaDAO {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Menu menu = new Menu();
-        menu.criarJogador();
-        menu.selecionarJogador();
+//        menu.criarJogador();
+        Jogador jogador = menu.selecionarJogador();
+        jogador.setDinheiro(10000);
+        JogadorDAO jogadorDAO = JogadorDAO.getInstance();
     }
 }
