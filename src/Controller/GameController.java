@@ -15,7 +15,6 @@ public class GameController {
     public void passarDia(Jogador jogador){
         tempoController.passarDia(jogador.getFazenda());
         saveController.salvar(jogador);
-
     }
 
    public void comecarJogo() throws IOException, ClassNotFoundException {

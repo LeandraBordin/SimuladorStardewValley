@@ -2,20 +2,21 @@ package Model;
 
 import Model.Enums.Estacoes;
 import Model.Enums.NivelFazenda;
+import Model.Enums.TipoAnimal;
 import Model.Enums.TipoPlanta;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Fazenda implements Serializable {
     private String nome;
     private Estacoes estacao;
     private int dia;
+    private int totalDias;
     private List<Planta> plantasPlantadas;
-    private List<Planta> estoquePlantas;
+    private List<TipoPlanta> estoqueSementes;
+    private List<Armazenavel> estoque;
+    private List<Animal> animais;
     private NivelFazenda nivel;
 
     public Fazenda(String nome) {
@@ -23,7 +24,9 @@ public class Fazenda implements Serializable {
         setEstacao(Estacoes.PRIMAVERA);
         setDia(1);
         setPlantasPlantadas(new ArrayList<>());
-        setEstoquePlantas(new ArrayList<>());
+        setEstoqueSementes(new ArrayList<>());
+        setEstoque(new ArrayList<>());
+        setAnimais(new ArrayList<>());
         setNivel(NivelFazenda.NIVEL_1);
     }
     public void passarDiaCrescimentoPlantas(){
@@ -55,48 +58,96 @@ public class Fazenda implements Serializable {
         this.dia = dia;
     }
 
+    public List<Animal> getAnimais() {
+        return animais;
+    }
+
+    public void setAnimais(List<Animal> animais) {
+        this.animais = animais;
+    }
+
+    public List<Armazenavel> getEstoque() {
+        return estoque;
+    }
+
+    public void setEstoque(List<Armazenavel> estoque) {
+        this.estoque = estoque;
+    }
+
     public void passarDia(){
-        passarDiaCrescimentoPlantas();
         dia++;
+        totalDias++;
+        passarDiaCrescimentoPlantas();
     }
 
-    public void passarEstacao(){
-        if (dia > 28){
+    public int passarEstacao() {
+        if (dia > 28) {
             Estacoes[] todas = Estacoes.values();
-            Estacoes prox = todas[(estacao.ordinal()+1) % todas.length];
+            Estacoes prox = todas[(estacao.ordinal() + 1) % todas.length];
             setEstacao(prox);
+            dia = 1;
+
+            int antes = plantasPlantadas.size();
+            plantasPlantadas.removeIf(planta ->
+                    !planta.getTipo().getEstacao().contains(estacao));
+            return antes - plantasPlantadas.size();
         }
+        return 0;
     }
 
-    public Planta colher(Planta planta){
-        if(planta.prontoParaColheita(planta) && planta.getTipo().getEstacao().contains(getEstacao())){
-            guardarPlanta(planta);
-            removerPlanta(planta);
-        } else if (!planta.prontoParaColheita(planta) &planta.getTipo().getEstacao().contains(getEstacao())) {
-            System.out.println("Ainda não é possível colher!");
+    public Planta colher(Planta planta) {
+        if (!planta.getTipo().getEstacao().contains(getEstacao())) {
+            System.out.println("Fora de estação, não é possível colher!");
+            return planta;
         }
+
+        if (!planta.prontoParaColheita()) {
+            System.out.println("Ainda não é possível colher!");
+            return planta;
+        }
+
+        guardarNoEstoque(planta);
+        planta.colher();
+
+        if (!planta.getTipo().temRecrescimento()) {
+            removerPlanta(planta);
+            removerSementeEstoque(planta.getTipo());
+        }
+
         return planta;
     }
 
-    public void colherEmMassa(){
-        List<Planta> aux = new ArrayList<>();
-        while(!getPlantasPlantadas().isEmpty()){
-            Planta plantaColhida = colher(getPlantasPlantadas().getFirst());
-            aux.add(plantaColhida);
+    public void colherEmMassa() {
+        List<Planta> prontas = plantasPlantadas.stream()
+                .filter(p -> p.prontoParaColheita()
+                        && p.getTipo().getEstacao().contains(getEstacao()))
+                .toList();
+
+        if (prontas.isEmpty()) {
+            System.out.println("Nenhuma planta pronta para colheita.");
+            return;
         }
+
         HashMap<TipoPlanta, Integer> colhidas = new HashMap<>();
-        TipoPlanta tipo = null;
-        for(Planta planta : aux){
-            tipo = planta.getTipo();
-            if(colhidas.containsKey(tipo)){
-                colhidas.put(tipo, colhidas.get(tipo) + 1);
-            } else {
-                colhidas.put(tipo, 1);
-            }
+        boolean temRegrowth = false;
+
+        for (Planta planta : prontas) {
+            colher(planta);
+            colhidas.merge(planta.getTipo(), 1, Integer::sum);
+            if (planta.getTipo().temRecrescimento()) temRegrowth = true;
         }
+
         System.out.println("Colheita feita com sucesso!");
-        for(Map.Entry<TipoPlanta, Integer> entry : colhidas.entrySet()){
-            System.out.println(entry.getKey().getNome() + ": " + entry.getValue());
+        for (Map.Entry<TipoPlanta, Integer> entry : colhidas.entrySet()) {
+            TipoPlanta tipo = entry.getKey();
+            String sufixo = tipo.temRecrescimento()
+                    ? " (regenera em " + tipo.getDiasRecresce() + " dias)"
+                    : "";
+            System.out.println(tipo.getNome() + ": " + entry.getValue() + sufixo);
+        }
+
+        if (temRegrowth) {
+            System.out.println("Plantas em regeneração não foram removidas do campo.");
         }
     }
 
@@ -115,6 +166,17 @@ public class Fazenda implements Serializable {
     public void removerPlanta(Planta planta){
         plantasPlantadas.remove(planta);
     }
+    public void removerSementeEstoque(TipoPlanta tipoPlanta){
+        estoqueSementes.remove(tipoPlanta);
+    }
+
+    public List<TipoPlanta> getEstoqueSementes() {
+        return estoqueSementes;
+    }
+
+    public void setEstoqueSementes(List<TipoPlanta> estoqueSementes) {
+        this.estoqueSementes = estoqueSementes;
+    }
 
     public NivelFazenda getNivel() {
         return nivel;
@@ -124,18 +186,21 @@ public class Fazenda implements Serializable {
         this.nivel = nivel;
     }
 
-    public List<Planta> getEstoquePlantas() {
-        return estoquePlantas;
+    public int getTotalDias() {
+        return totalDias;
     }
 
-    public void setEstoquePlantas(List<Planta> estoquePlantas) {
-        this.estoquePlantas = estoquePlantas;
+    public void setTotalDias(int totalDias) {
+        this.totalDias = totalDias;
     }
 
-    public void guardarPlanta(Planta planta){
-        estoquePlantas.add(planta);
+    public void guardarNoEstoque(Armazenavel item){
+        estoque.add(item);
     }
 
+    public void guardarSemente(TipoPlanta tipoPlanta){
+        estoqueSementes.add(tipoPlanta);
+    }
     @Override
     public String toString() {
         return "Fazenda{" +

@@ -29,7 +29,7 @@ public class Jogador implements Serializable, Comparable<Jogador> {
     }
 
     public void setDinheiro(int dinheiro) {
-        if (dinheiro > 0){
+        if (dinheiro >= 0){
             this.dinheiro = dinheiro;
         }
     }

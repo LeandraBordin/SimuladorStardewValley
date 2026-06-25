@@ -1,8 +1,8 @@
 package Model.Enums;
 
 public enum Estacoes {
-    VERAO,
     PRIMAVERA,
+    VERAO,
     OUTONO,
     INVERNO;
 }

@@ -1,13 +1,7 @@
 package Controller;
 
-import Model.Enums.TipoPlanta;
 import Model.Fazenda;
 import Model.Planta;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class FazendaController {
     private Fazenda fazenda;
@@ -17,11 +11,16 @@ public class FazendaController {
     }
 
     public boolean plantar(Planta planta){
-        if(fazenda.getNivel().getCapacidade() == fazenda.getPlantasPlantadas().size()){
+        if(!planta.getTipo().getEstacao().contains(fazenda.getEstacao())){
+            System.out.println("Essa planta não pode ser plantada na estação atual: "+fazenda.getEstacao());
+            return false;
+        }
+        if(fazenda.getNivel().getCapacidade() == fazenda.getEstoqueSementes().size()){
             System.out.println("Limite de plantação máxima atingido");
             return false;
         }
         fazenda.plantarPlanta(planta);
+        fazenda.removerSementeEstoque(planta.getTipo());
         return true;
     }
 
@@ -37,7 +36,7 @@ public class FazendaController {
         fazenda.passarDia();
     }
 
-    public void passarEstacao(){
-        fazenda.passarEstacao();
+    public int passarEstacao(){
+        return fazenda.passarEstacao();
     }
 }

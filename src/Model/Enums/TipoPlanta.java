@@ -1,8 +1,10 @@
 package Model.Enums;
 
+import Model.Armazenavel;
+
 import java.util.List;
 
-public enum TipoPlanta {
+public enum TipoPlanta implements Armazenavel {
     // PRIMAVERA
     ALHO           ("Alho",            List.of(Estacoes.PRIMAVERA), 4,  40,  60,0),
     BATATA         ("Batata",          List.of(Estacoes.PRIMAVERA), 6,  50,  80,0),
@@ -39,7 +41,7 @@ public enum TipoPlanta {
     private final int diasCrescimento;
     private final int precoCompra;
     private final int precoVenda;
-    private final int diasRegenera;
+    private final int diasRecresce;
 
     TipoPlanta(String nome, List<Estacoes> estacao, int diasCrescimento, int precoCompra, int precoVenda, int diasRegenera) {
         this.nome = nome;
@@ -47,11 +49,16 @@ public enum TipoPlanta {
         this.diasCrescimento = diasCrescimento;
         this.precoCompra = precoCompra;
         this.precoVenda = precoVenda;
-        this.diasRegenera = diasRegenera;
+        this.diasRecresce = diasRegenera;
     }
 
     public String getNome() {
         return nome;
+    }
+
+    @Override
+    public int getValorVenda() {
+        return precoVenda;
     }
 
     public int getDiasCrescimento() {
@@ -66,6 +73,10 @@ public enum TipoPlanta {
         return precoVenda;
     }
 
+    public int getDiasRecresce() {
+        return diasRecresce;
+    }
+    public boolean temRecrescimento() { return diasRecresce > 0; }
     public List<Estacoes> getEstacao() {
         return estacao;
     }
