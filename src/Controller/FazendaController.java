@@ -15,7 +15,7 @@ public class FazendaController {
             System.out.println("Essa planta não pode ser plantada na estação atual: "+fazenda.getEstacao());
             return false;
         }
-        if(fazenda.getNivel().getCapacidade() == fazenda.getEstoqueSementes().size()){
+        if(fazenda.getNivel().getCapacidade() == fazenda.getPlantasPlantadas().size()){
             System.out.println("Limite de plantação máxima atingido");
             return false;
         }

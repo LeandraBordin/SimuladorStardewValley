@@ -1,8 +1,6 @@
 package Model;
 
 import Model.Enums.TipoAnimal;
-import Model.Enums.TipoPlanta;
-
 import java.util.ArrayList;
 import java.util.List;
 

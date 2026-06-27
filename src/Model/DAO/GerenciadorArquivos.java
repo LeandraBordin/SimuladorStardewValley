@@ -59,4 +59,6 @@ public class GerenciadorArquivos {
         sout.writeObject(obj);
         out.close();
     }
+
+
 }

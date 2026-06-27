@@ -2,7 +2,9 @@ package Model;
 
 import Model.Enums.TipoPlanta;
 
-public class Planta implements Armazenavel {
+import java.io.Serializable;
+
+public class Planta implements Serializable,Armazenavel  {
     private TipoPlanta tipo;
     private int diasCrescimento;
     private boolean regenerando;
@@ -18,20 +20,16 @@ public class Planta implements Armazenavel {
         diasCrescimento++;
     }
 
-    // Adapta o limite dependendo se está crescendo ou regenerando
     public boolean prontoParaColheita() {
         int limite = regenerando
                 ? tipo.getDiasRecresce()
                 : tipo.getDiasCrescimento();
         return diasCrescimento >= limite;
     }
-
-    // Chamado pela lógica de colheita
     public boolean colher() {
         if (!prontoParaColheita()) return false;
 
         if (tipo.temRecrescimento()) {
-            // Reinicia o contador para o ciclo de regeneração
             diasCrescimento = 0;
             regenerando = true;
         }

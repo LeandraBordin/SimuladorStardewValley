@@ -2,6 +2,8 @@ package View;
 
 import Controller.FazendaController;
 import Controller.ArmazemController;
+import Controller.SaveController;
+import Controller.TempoController;
 import Model.Armazem;
 import Model.DAO.GerenciadorArquivos;
 import Model.DAO.JogadorDAO;
@@ -31,6 +33,7 @@ public class Menu {
      * @param jogador Jogador logado
      */
     public void menuPrincipal(Jogador jogador) {
+        SaveController saveController = new SaveController();
         System.out.printf("Bem vindo ao jogo, %s!%n", jogador.getNome());
         int opcao = -1;
         do {
@@ -55,6 +58,7 @@ public class Menu {
                 case 2 -> menuLoja(jogador);
                 case 0 -> {
                     System.out.println("Ate logo!");
+                    saveController.salvar(jogador);
                 }
                 default -> System.out.println("Opcao invalida!");
             }
@@ -70,7 +74,8 @@ public class Menu {
     public void menuFazenda(Jogador jogador) {
         Fazenda fazenda = jogador.getFazenda();
         FazendaController fazendaController = new FazendaController(fazenda);
-
+        TempoController tempoController = new TempoController();
+        SaveController saveController = new SaveController();
         int op = -1;
         do {
             System.out.printf(
@@ -101,8 +106,9 @@ public class Menu {
             switch (op) {
                 case 1 -> menuPlantar(fazenda, fazendaController);
                 case 2 -> {
-                    fazendaController.passarDia();
-                    int mortas = fazendaController.passarEstacao();
+                    tempoController.passarDia(fazenda);
+                    saveController.salvar(jogador);
+                    int mortas = tempoController.passarEstacao(fazenda);
 
                     System.out.printf("Dia %d! Estacao: %s%n",
                             fazenda.getDia(),
@@ -125,7 +131,6 @@ public class Menu {
 
     /**
      * Submenu de plantio: lista sementes do estoque e planta a quantidade escolhida.
-     *
      * @param fazenda           Fazenda do jogador
      * @param fazendaController Controller da fazenda
      */
@@ -142,7 +147,6 @@ public class Menu {
             return;
         }
 
-        // Monta lista de tipos únicos presentes no estoque
         List<TipoPlanta> tiposDisponiveis = new ArrayList<>();
         for (Planta p : estoque) {
             if (!tiposDisponiveis.contains(p.getTipo())) {
@@ -181,6 +185,9 @@ public class Menu {
         int quantidade = -1;
         try {
             quantidade = scanner.nextInt();
+            if (quantidade > fazenda.getNivel().getCapacidade()){
+                quantidade = fazenda.getNivel().getCapacidade();
+            }
         } catch (InputMismatchException e) {
             System.out.println("Opcao invalida!");
             scanner.nextLine();
@@ -221,7 +228,6 @@ public class Menu {
 
     /**
      * Menu da loja com opções de visualização e compra.
-     *
      * @param jogador Jogador que está acessando a loja
      */
     public void menuLoja(Jogador jogador) {
@@ -261,7 +267,6 @@ public class Menu {
 
     /**
      * Solicita ao jogador que selecione uma estação do ano.
-     *
      * @return Estação selecionada ou null se a opção for inválida
      */
     public Estacoes selecionarEstacao() {
@@ -295,7 +300,6 @@ public class Menu {
 
     /**
      * Menu inicial: seleciona ou cria jogador e retorna o jogador para entrar no jogo.
-     *
      * @return Jogador selecionado, ou null se o usuário saiu sem selecionar
      */
     public Jogador menuJogador() throws IOException, ClassNotFoundException {

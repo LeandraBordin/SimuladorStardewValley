@@ -197,10 +197,6 @@ public class Fazenda implements Serializable {
     public void guardarNoEstoque(Armazenavel item){
         estoque.add(item);
     }
-
-    public void guardarSemente(TipoPlanta tipoPlanta){
-        estoqueSementes.add(tipoPlanta);
-    }
     @Override
     public String toString() {
         return "Fazenda{" +
