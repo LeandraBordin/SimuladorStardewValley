@@ -24,6 +24,9 @@ public class Menu {
     private final Carpintaria carpintaria = new Carpintaria();
     private final CarpintariaView carpintariaView = new CarpintariaView();
     private final CarpintariaController carpintariaController = new CarpintariaController(carpintaria, carpintariaView);
+    private final Rancho rancho = new Rancho();
+    private final RanchoView ranchoView = new RanchoView();
+    private final RanchoController ranchoController = new RanchoController(rancho, ranchoView);
     /**
      * Menu principal do jogo, exibido após o login do jogador.
      *
@@ -53,7 +56,7 @@ public class Menu {
             switch (opcao) {
                 case 1 -> menuFazenda(jogador);
                 case 2 -> menuLoja(jogador);
-                case 3 -> System.out.println("Rancho em breve..."); // se ainda não tiver menuRancho
+                case 3 -> ranchoController.abrirMenu(jogador);
                 case 4 -> carpintariaController.abrirMenu(jogador);
                 case 0 -> {
                     System.out.println("Ate logo!");
@@ -252,7 +255,7 @@ public class Menu {
             String drop = a.isDropDisponivel() ? "✔ drop pronto" : "✘ sem drop";
             System.out.printf("%d - %s | %s | %s%n",
                     i + 1,
-                    a.getTipoAnimal().getNome(),
+                    a.getTipoAnimal().getNomeAnimal(),
                     status,
                     drop);
         }
@@ -271,7 +274,7 @@ public class Menu {
         int totalColetado = 0;
         for (Animal a : comDrop) {
             a.coletarDrop();
-            jogador.getFazenda().getEstoque().add(a.getTipoAnimal()); // adiciona no estoque
+            jogador.getFazenda().getEstoque().add(a.getTipoAnimal()); // getNome() do TipoAnimal agora retorna o drop
             totalColetado++;
         }
 

@@ -31,6 +31,14 @@ public class Fazenda implements Serializable {
             planta.passarDiaCrescimento();
         }
     }
+
+    public void passarDiaAnimais(){
+        for (Construcao construcao : construcoes) {
+            for (Animal animal : construcao.getAnimais()) {
+                animal.passarDia();
+            }
+        }
+    }
     public String getNome() {
         return nome;
     }
@@ -79,6 +87,7 @@ public class Fazenda implements Serializable {
         dia++;
         totalDias++;
         passarDiaCrescimentoPlantas();
+        passarDiaAnimais();
     }
 
     public int passarEstacao() {

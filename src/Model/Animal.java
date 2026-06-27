@@ -2,7 +2,9 @@ package Model;
 
 import Model.Enums.TipoAnimal;
 
-public class Animal {
+import java.io.Serializable;
+
+public class Animal implements Serializable {
     private TipoAnimal tipoAnimal;
     private int dias;
     private boolean adulto;
