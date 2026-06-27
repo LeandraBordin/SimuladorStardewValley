@@ -1,17 +1,12 @@
 package View;
 
-import Controller.FazendaController;
-import Controller.ArmazemController;
-import Controller.SaveController;
-import Controller.TempoController;
-import Model.Armazem;
+import Controller.*;
+import Model.*;
 import Model.DAO.GerenciadorArquivos;
 import Model.DAO.JogadorDAO;
+import Model.Enums.CategoriaConstrucao;
 import Model.Enums.Estacoes;
 import Model.Enums.TipoPlanta;
-import Model.Fazenda;
-import Model.Jogador;
-import Model.Planta;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +21,9 @@ public class Menu {
     private final Armazem armazem = new Armazem();
     private final ArmazemView armazemView = new ArmazemView();
     private final ArmazemController lojaController = new ArmazemController(armazem, armazemView);
-
+    private final Carpintaria carpintaria = new Carpintaria();
+    private final CarpintariaView carpintariaView = new CarpintariaView();
+    private final CarpintariaController carpintariaController = new CarpintariaController(carpintaria, carpintariaView);
     /**
      * Menu principal do jogo, exibido após o login do jogador.
      *
@@ -56,6 +53,8 @@ public class Menu {
             switch (opcao) {
                 case 1 -> menuFazenda(jogador);
                 case 2 -> menuLoja(jogador);
+                case 3 -> System.out.println("Rancho em breve..."); // se ainda não tiver menuRancho
+                case 4 -> carpintariaController.abrirMenu(jogador);
                 case 0 -> {
                     System.out.println("Ate logo!");
                     saveController.salvar(jogador);
@@ -76,8 +75,18 @@ public class Menu {
         FazendaController fazendaController = new FazendaController(fazenda);
         TempoController tempoController = new TempoController();
         SaveController saveController = new SaveController();
+
         int op = -1;
         do {
+            // Busca construções disponíveis
+            List<Construcao> galinheiros = fazenda.getConstrucoes().stream()
+                    .filter(c -> c.getTipo().getCategoriaCompativel() == CategoriaConstrucao.GALINHEIRO)
+                    .toList();
+
+            List<Construcao> celeiros = fazenda.getConstrucoes().stream()
+                    .filter(c -> c.getTipo().getCategoriaCompativel() == CategoriaConstrucao.CELEIRO)
+                    .toList();
+
             System.out.printf(
                     "╔══════════════════════════════════════════════╗%n" +
                             "║  FAZENDA: %-35s║%n" +
@@ -86,14 +95,25 @@ public class Menu {
                             "╚══════════════════════════════════════════════╝%n" +
                             "1 - Plantar%n" +
                             "2 - Passar dia%n" +
-                            "3 - Colher tudo%n" +
-                            "0 - Voltar%n",
+                            "3 - Colher tudo%n",
                     fazenda.getNome(),
                     fazenda.getDia(),
                     fazenda.getEstacao().name().toLowerCase(),
                     fazenda.getPlantasPlantadas().size(),
                     fazenda.getNivel().getCapacidade(),
                     fazenda.getEstoque().size());
+
+            // Exibe opção de galinheiro só se tiver
+            if (!galinheiros.isEmpty()) {
+                System.out.println("4 - Ir para o Galinheiro");
+            }
+
+            // Exibe opção de celeiro só se tiver
+            if (!celeiros.isEmpty()) {
+                System.out.println("5 - Ir para o Celeiro");
+            }
+
+            System.out.println("0 - Voltar");
 
             try {
                 op = scanner.nextInt();
@@ -122,11 +142,142 @@ public class Menu {
                     }
                 }
                 case 3 -> fazendaController.colherEmMassa();
+                case 4 -> {
+                    if (!galinheiros.isEmpty()) {
+                        menuConstrucao(galinheiros, jogador);
+                    } else {
+                        System.out.println("Opcao invalida!");
+                    }
+                }
+                case 5 -> {
+                    if (!celeiros.isEmpty()) {
+                        menuConstrucao(celeiros, jogador);
+                    } else {
+                        System.out.println("Opcao invalida!");
+                    }
+                }
                 case 0 -> System.out.println("Voltando...");
                 default -> System.out.println("Opcao invalida!");
             }
 
         } while (op != 0);
+    }
+    private void menuConstrucao(List<Construcao> construcoes, Jogador jogador) {
+        // Se só tiver uma, entra direto
+        if (construcoes.size() == 1) {
+            menuAnimais(construcoes.get(0), jogador);
+            return;
+        }
+
+        System.out.println("=== Escolha a construcao ===");
+        for (int i = 0; i < construcoes.size(); i++) {
+            Construcao c = construcoes.get(i);
+            System.out.printf("%d - %s | Animais: %d/%d%n",
+                    i + 1,
+                    c.getTipo().getNome(),
+                    c.getAnimais().size(),
+                    c.getTipo().getCapacidade());
+        }
+        System.out.println("0 - Voltar");
+
+        int op = -1;
+        try {
+            op = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Opcao invalida!");
+            scanner.nextLine();
+            return;
+        }
+
+        if (op == 0) return;
+        if (op < 1 || op > construcoes.size()) {
+            System.out.println("Opcao invalida!");
+            return;
+        }
+
+        menuAnimais(construcoes.get(op - 1), jogador);
+    }
+    private void menuAnimais(Construcao construcao, Jogador jogador) {
+        int op = -1;
+        do {
+            // Conta drops disponíveis
+            long dropsDisponiveis = construcao.getAnimais().stream()
+                    .filter(Animal::isDropDisponivel)
+                    .count();
+
+            System.out.printf("""
+                ╔══════════════════════════════════════════════╗
+                ║  %-43s║
+                ║  Animais: %d/%d | Drops prontos: %d             ║
+                ╚══════════════════════════════════════════════╝
+                1 - Ver animais
+                2 - Coletar drops
+                0 - Voltar
+                """,
+                    construcao.getTipo().getNome(),
+                    construcao.getAnimais().size(),
+                    construcao.getTipo().getCapacidade(),
+                    dropsDisponiveis);
+
+            try {
+                op = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Opcao invalida!");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (op) {
+                case 1 -> listarAnimais(construcao);
+                case 2 -> coletarDrops(construcao, jogador);
+                case 0 -> System.out.println("Voltando...");
+                default -> System.out.println("Opcao invalida!");
+            }
+
+        } while (op != 0);
+    }
+
+    private void listarAnimais(Construcao construcao) {
+        List<Animal> animais = construcao.getAnimais();
+
+        if (animais.isEmpty()) {
+            System.out.println("Nenhum animal aqui ainda.");
+            return;
+        }
+
+        System.out.println("=== ANIMAIS ===");
+        for (int i = 0; i < animais.size(); i++) {
+            Animal a = animais.get(i);
+            String status = a.isAdulto() ? "Adulto" : "Filhote (dia " + a.getDias() + "/5)";
+            String drop = a.isDropDisponivel() ? "✔ drop pronto" : "✘ sem drop";
+            System.out.printf("%d - %s | %s | %s%n",
+                    i + 1,
+                    a.getTipoAnimal().getNome(),
+                    status,
+                    drop);
+        }
+    }
+
+    private void coletarDrops(Construcao construcao, Jogador jogador) {
+        List<Animal> comDrop = construcao.getAnimais().stream()
+                .filter(Animal::isDropDisponivel)
+                .toList();
+
+        if (comDrop.isEmpty()) {
+            System.out.println("Nenhum drop disponivel ainda. Passe o dia!");
+            return;
+        }
+
+        int totalColetado = 0;
+        for (Animal a : comDrop) {
+            a.coletarDrop();
+            jogador.getFazenda().getEstoque().add(a.getTipoAnimal()); // adiciona no estoque
+            totalColetado++;
+        }
+
+        System.out.printf("%d %s(s) coletado(s) e adicionado(s) ao estoque!%n",
+                totalColetado,
+                comDrop.get(0).getTipoAnimal().getDrop());
     }
 
     /**

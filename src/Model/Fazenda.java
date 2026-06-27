@@ -1,9 +1,6 @@
 package Model;
 
-import Model.Enums.Estacoes;
-import Model.Enums.NivelFazenda;
-import Model.Enums.TipoAnimal;
-import Model.Enums.TipoPlanta;
+import Model.Enums.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,7 +13,7 @@ public class Fazenda implements Serializable {
     private List<Planta> plantasPlantadas;
     private List<TipoPlanta> estoqueSementes;
     private List<Armazenavel> estoque;
-    private List<Animal> animais;
+    private List <Construcao> construcoes;
     private NivelFazenda nivel;
 
     public Fazenda(String nome) {
@@ -26,7 +23,7 @@ public class Fazenda implements Serializable {
         setPlantasPlantadas(new ArrayList<>());
         setEstoqueSementes(new ArrayList<>());
         setEstoque(new ArrayList<>());
-        setAnimais(new ArrayList<>());
+        setConstrucoes(new ArrayList<>());
         setNivel(NivelFazenda.NIVEL_1);
     }
     public void passarDiaCrescimentoPlantas(){
@@ -58,20 +55,24 @@ public class Fazenda implements Serializable {
         this.dia = dia;
     }
 
-    public List<Animal> getAnimais() {
-        return animais;
-    }
-
-    public void setAnimais(List<Animal> animais) {
-        this.animais = animais;
-    }
-
     public List<Armazenavel> getEstoque() {
         return estoque;
     }
 
     public void setEstoque(List<Armazenavel> estoque) {
         this.estoque = estoque;
+    }
+
+    public List<Construcao> getConstrucoes() {
+        return construcoes;
+    }
+
+    public void setConstrucoes(List<Construcao> construcoes) {
+        this.construcoes = construcoes;
+    }
+
+    public void adicionarConstrucao(Construcao construcao){
+        construcoes.add(construcao);
     }
 
     public void passarDia(){
@@ -197,13 +198,18 @@ public class Fazenda implements Serializable {
     public void guardarNoEstoque(Armazenavel item){
         estoque.add(item);
     }
+
     @Override
     public String toString() {
         return "Fazenda{" +
                 "nome='" + nome + '\'' +
                 ", estacao=" + estacao +
                 ", dia=" + dia +
+                ", totalDias=" + totalDias +
                 ", plantasPlantadas=" + plantasPlantadas +
+                ", estoqueSementes=" + estoqueSementes +
+                ", estoque=" + estoque +
+                ", construcoes=" + construcoes +
                 ", nivel=" + nivel +
                 '}';
     }

@@ -73,56 +73,6 @@ public class ArmazemController {
      *
      * @param jogador Jogador que está vendendo
      */
-//    public void realizarVenda(Jogador jogador) {
-//        List<Armazenavel> estoque = jogador.getFazenda().getEstoque();
-//
-//        if (estoque.isEmpty()) {
-//            armazemView.exibirMensagem("Voce nao tem plantas colhidas para vender.");
-//            return;
-//        }
-//
-//        // Monta lista de tipos únicos presentes no estoque
-//        List<TipoPlanta> tiposDisponiveis = new ArrayList<>();
-//        for (Object p : estoque) {
-//            if (!tiposDisponiveis.contains(p.getTipo())) {
-//                tiposDisponiveis.add(p.getTipo());
-//            }
-//        }
-//
-//        armazemView.exibirEstoqueParaVenda(tiposDisponiveis,Object estoque, jogador.getDinheiro());
-//
-//        int opcao = armazemView.lerOpcaoPlanta(tiposDisponiveis.size());
-//        if (opcao == 0) {
-//            armazemView.exibirMensagem("Venda cancelada.");
-//            return;
-//        }
-//
-//        TipoPlanta tipoSelecionado = tiposDisponiveis.get(opcao - 1);
-//
-//        long quantidadeDisponivel = estoque.stream()
-//                .filter(p -> p.getTipo() == tipoSelecionado)
-//                .count();
-//
-//        int quantidade = armazemView.lerQuantidadeVenda(tipoSelecionado, (int) quantidadeDisponivel);
-//        if (quantidade == 0) {
-//            armazemView.exibirMensagem("Venda cancelada.");
-//            return;
-//        }
-//
-//        int totalAReceber = tipoSelecionado.getPrecoVenda() * quantidade;
-//        boolean confirmado = armazemView.confirmarVenda(tipoSelecionado, quantidade, totalAReceber, jogador.getDinheiro());
-//        if (!confirmado) {
-//            armazemView.exibirMensagem("Venda cancelada.");
-//            return;
-//        }
-//
-//        int recebido = armazem.vender(jogador, String.valueOf(tipoSelecionado), quantidade);
-//        if (recebido >= 0) {
-//            armazemView.exibirSucessoVenda(tipoSelecionado, quantidade, recebido, jogador.getDinheiro());
-//        } else {
-//            armazemView.exibirMensagem("Erro ao realizar a venda. Tente novamente.");
-//        }
-//    }
 
     public void realizarVenda(Jogador jogador) {
 
